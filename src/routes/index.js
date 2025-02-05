@@ -11,4 +11,8 @@ router.get('/', (req, res) => {
 // The about page route
 router.get('/about', async  (req, res) => {
     const nav = await getNav();
-    res.render('partials/about', { title: 'About Page', na
+    res.render('partials/about', { title: 'About Page', nav });
+});
+
+
+export default router;
