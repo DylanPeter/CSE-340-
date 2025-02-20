@@ -8,9 +8,13 @@ import baseRoute from './src/routes/index.js';
 import categoryRoute from './src/routes/category/index.js';
 import configNodeEnv from './src/middleware/node-env.js';
 import configureStaticPaths from './src/middleware/static-paths.js';
+import fileUploads from './src/middleware/file-uploads.js';
+import gameRoute from './src/routes/game/index.js';
 import layouts from './src/middleware/layouts.js';
 import { notFoundHandler, globalErrorHandler } from './src/middleware/error-handler.js';
 import { setupDatabase } from './src/database/index.js';
+
+
 
 // Get the current file path and directory name
 const __filename = fileURLToPath(import.meta.url);
@@ -38,6 +42,9 @@ app.set('layout default', 'default');
 app.set('layouts', path.join(__dirname, 'src/views/layouts'));
 app.use(layouts);
 
+// Middleware to process multipart form data with file uploads
+app.use(fileUploads);
+
 // Middleware to parse JSON data in request body
 app.use(express.json());
 
@@ -47,12 +54,18 @@ app.use(express.urlencoded({ extended: true }));
 // Use the home route for the root URL
 app.use('/', baseRoute);
 
-// Handle all request for a category of games
+// Handle routes specific to the games
+app.use('/game', gameRoute);
+
+// Handle routes specific to the categories
 app.use('/category', categoryRoute);
+
 
 // Apply error handlers
 app.use(notFoundHandler);
 app.use(globalErrorHandler);
+
+
 
 // When in development mode, start a WebSocket server for live reloading
 if (mode.includes('dev')) {
